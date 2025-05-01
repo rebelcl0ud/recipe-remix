@@ -1,0 +1,30 @@
+# Dependency directories
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Remix cache
+.remix/
+
+# Vite cache
+.vite/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+.env.*.local
+
+# IDEs and editors
+.vscode/
+.idea/
