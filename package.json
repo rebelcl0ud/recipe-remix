@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "remix vite:build && tsc",
+    "build": "remix vite:build && tsc -p tsconfig.build.json",
     "dev": "NODE_OPTIONS='--loader ts-node/esm' ts-node server.ts",
     "start": "cross-env NODE_ENV=production node build/server.js",
     "typecheck": "tsc --noEmit"
