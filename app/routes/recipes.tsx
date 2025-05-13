@@ -1,15 +1,22 @@
-import { Link, Outlet } from "@remix-run/react";
-import { dummyData } from "../data/db.js";
+import { Link, Outlet, useLoaderData } from "@remix-run/react";
+import { prisma } from "../lib/prisma.server";
+
+export async function loader() {
+  const recipes = await prisma.recipe.findMany();
+
+  return { recipes };
+}
 
 export default function RecipesLayout() {
+  const data = useLoaderData<typeof loader>();
   console.log("RecipesLayout");
   return (
     <div>
       <aside>
         <ul>
-          {dummyData.map(({ id, title }) => (
-            <li key={id}>
-              <Link to={`/recipes/${id}`}>{title}</Link>
+          {data.recipes.map((recipe: { id: number; title: string }) => (
+            <li key={recipe.id}>
+              <Link to={`/recipes/${recipe.id}`}>{recipe.title}</Link>
             </li>
           ))}
         </ul>
