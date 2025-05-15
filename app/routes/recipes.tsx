@@ -2,14 +2,18 @@ import { Link, Outlet, useLoaderData } from "@remix-run/react";
 import { prisma } from "../lib/prisma.server";
 
 export async function loader() {
-  const recipes = await prisma.recipe.findMany();
+  const recipes = await prisma.recipe.findMany({
+    select: {
+      id: true,
+      title: true,
+    },
+  });
 
   return { recipes };
 }
 
 export default function RecipesLayout() {
   const data = useLoaderData<typeof loader>();
-  console.log("RecipesLayout");
   return (
     <div>
       <aside>
