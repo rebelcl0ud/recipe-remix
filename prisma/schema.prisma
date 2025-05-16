@@ -28,10 +28,26 @@ model Recipe {
   id Int @id @default(autoincrement())
   title String
   content String?
+  ingredients RecipeIngredient[]
   published Boolean @default(false)
   author User @relation(fields: [authorId], references: [id])
   authorId Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   deletedAt DateTime?
+}
+
+model Ingredient {
+  id Int @id @default(autoincrement())
+  name String @unique
+  recipeIngredients RecipeIngredient[]
+}
+
+model RecipeIngredient {
+  id Int @id @default(autoincrement())
+  recipe Recipe @relation(fields: [recipeId], references: [id])
+  recipeId Int
+  ingredient Ingredient @relation(fields: [ingredientId], references: [id])
+  ingredientId Int
+  amount String
 }
