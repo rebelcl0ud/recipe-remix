@@ -6,7 +6,7 @@ generator client {
   // [5/13/25] explicitly setting output path -- currently the default (implicity set), 
   // will no longer be the case w/ Prisma 7
   // See: https://pris.ly/cli/output-path
-  output   = "./node_modules/@prisma/client"
+  output   = "../node_modules/.prisma/client"
 }
 
 datasource db {
