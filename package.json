@@ -9,6 +9,9 @@
     "start": "cross-env NODE_ENV=production node build/server.js",
     "typecheck": "tsc --noEmit"
   },
+  "prisma": {
+    "seed": "npx tsx prisma/seed.ts"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",

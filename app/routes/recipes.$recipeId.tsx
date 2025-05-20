@@ -12,6 +12,17 @@ export async function loader({ params }: LoaderFunctionArgs) {
     select: {
       title: true,
       content: true,
+      ingredients: {
+        select: {
+          id: true,
+          amount: true,
+          ingredient: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
     },
   });
 
@@ -26,6 +37,13 @@ export default function RecipeId() {
     <div>
       <h1>{data.recipe?.title}</h1>
       <p>{data.recipe?.content}</p>
+      <ul>
+        {data.recipe.ingredients.map((i) => (
+          <li key={i.id}>
+            {i.amount} {i.ingredient.name}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
