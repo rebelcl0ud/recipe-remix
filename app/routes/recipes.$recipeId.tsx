@@ -1,4 +1,4 @@
-import { useLoaderData, useParams } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
 import { prisma } from "../lib/prisma.server";
 import { LoaderFunctionArgs } from "@remix-run/node";
 

@@ -19,7 +19,7 @@ async function main() {
   ]);
 
   // Create users with recipes
-  const user1 = await prisma.user.create({
+  await prisma.user.create({
     data: {
       email: "luchi@example.com",
       name: "Luchi",
@@ -42,7 +42,7 @@ async function main() {
     },
   });
 
-  const user2 = await prisma.user.create({
+  await prisma.user.create({
     data: {
       email: "katella@example.com",
       name: "Kat",
@@ -65,7 +65,7 @@ async function main() {
     },
   });
 
-  const user3 = await prisma.user.create({
+  await prisma.user.create({
     data: {
       email: "detra@example.com",
       name: "D",
