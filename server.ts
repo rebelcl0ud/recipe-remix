@@ -6,19 +6,19 @@ const viteDevServer =
   process.env.NODE_ENV === "production"
     ? null
     : await import("vite").then((vite) =>
-        vite.createServer({ server: { middlewareMode: true } })
+        vite.createServer({ server: { middlewareMode: true } }),
       );
 
 const app = express();
 
 app.use(
-  viteDevServer ? viteDevServer.middlewares : express.static("build/client")
+  viteDevServer ? viteDevServer.middlewares : express.static("build/client"),
 );
 
 const build: ServerBuild | (() => Promise<ServerBuild>) = viteDevServer
   ? async () =>
       viteDevServer!.ssrLoadModule(
-        "virtual:remix/server-build"
+        "virtual:remix/server-build",
       ) as Promise<ServerBuild>
   : ((await import(
       new URL("./server/index.js", import.meta.url).href
