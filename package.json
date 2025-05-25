@@ -25,11 +25,13 @@
     "@remix-run/express": "^2.16.5",
     "@remix-run/node": "^2.16.5",
     "@remix-run/react": "^2.16.5",
+    "@tailwindcss/vite": "^4.1.7",
     "cross-env": "^7.0.3",
     "express": "^4.21.2",
     "isbot": "^4.4.0",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "tailwindcss": "^4.1.7"
   },
   "devDependencies": {
     "@eslint/js": "^9.27.0",
