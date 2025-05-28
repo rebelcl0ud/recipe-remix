@@ -1,4 +1,4 @@
-import { Link, Outlet, useLoaderData } from "@remix-run/react";
+import { NavLink, Outlet, useLoaderData } from "@remix-run/react";
 import { prisma } from "../lib/prisma.server";
 
 export async function loader() {
@@ -20,7 +20,19 @@ export default function RecipesLayout() {
         <ul>
           {data.recipes.map((recipe: { id: number; title: string }) => (
             <li key={recipe.id}>
-              <Link to={`/recipes/${recipe.id}`}>{recipe.title}</Link>
+              <NavLink
+                to={`/recipes/${recipe.id}`}
+                className={({ isActive }) =>
+                  [
+                    "block px-4 py-1",
+                    isActive
+                      ? "bg-[var(--color-antiquewhite)] rounded-t-xl"
+                      : "bg-white rounded-t-xl",
+                  ].join(" ")
+                }
+              >
+                {recipe.title}
+              </NavLink>
             </li>
           ))}
         </ul>

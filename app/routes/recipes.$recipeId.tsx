@@ -34,7 +34,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
 export default function RecipeId() {
   const data = useLoaderData<typeof loader>();
   return (
-    <div>
+    <div className="bg-[var(--color-antiquewhite)] p-4 rounded-xl h-[400px]">
       <h1 className="font-bold">{data.recipe?.title}</h1>
       <p className="italic">{data.recipe?.content}</p>
       <ul className="m-4">
