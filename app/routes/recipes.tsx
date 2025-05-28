@@ -15,8 +15,8 @@ export async function loader() {
 export default function RecipesLayout() {
   const data = useLoaderData<typeof loader>();
   return (
-    <div>
-      <aside>
+    <div className="flex grow items-center justify-center gap-x-24">
+      <aside className="w-80">
         <ul>
           {data.recipes.map((recipe: { id: number; title: string }) => (
             <li key={recipe.id}>
@@ -25,8 +25,7 @@ export default function RecipesLayout() {
           ))}
         </ul>
       </aside>
-      <main>
-        <h1>Recipes</h1>
+      <main className="w-[560px] px-2">
         <Outlet />
       </main>
     </div>

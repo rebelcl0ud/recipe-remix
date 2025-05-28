@@ -1,6 +1,8 @@
 import { LinksFunction } from "@remix-run/node";
-import { Link, Links, Meta, Outlet, Scripts } from "@remix-run/react";
+import { Links, Meta, Outlet, Scripts } from "@remix-run/react";
 import styles from "./tailwind.css";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
 
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: styles }];
 
@@ -12,10 +14,10 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body>
-        <Link to="/">Home</Link>
-        <Link to="/recipes">Recipes</Link>
+      <body className="min-h-screen flex flex-col items-center">
+        <Header />
         <Outlet />
+        <Footer />
         <Scripts />
       </body>
     </html>

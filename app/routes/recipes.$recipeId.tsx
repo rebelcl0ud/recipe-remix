@@ -35,11 +35,11 @@ export default function RecipeId() {
   const data = useLoaderData<typeof loader>();
   return (
     <div>
-      <h1>{data.recipe?.title}</h1>
-      <p>{data.recipe?.content}</p>
-      <ul>
+      <h1 className="font-bold">{data.recipe?.title}</h1>
+      <p className="italic">{data.recipe?.content}</p>
+      <ul className="m-4">
         {data.recipe.ingredients.map((i) => (
-          <li key={i.id}>
+          <li className="list-disc" key={i.id}>
             {i.amount} {i.ingredient.name}
           </li>
         ))}
