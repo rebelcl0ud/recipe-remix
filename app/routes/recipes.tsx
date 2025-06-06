@@ -6,6 +6,7 @@ export async function loader() {
     select: {
       id: true,
       title: true,
+      published: true,
     },
   });
 
@@ -18,23 +19,25 @@ export default function RecipesLayout() {
     <div className="flex grow items-center justify-center gap-x-24">
       <aside className="w-80">
         <ul>
-          {data.recipes.map((recipe: { id: number; title: string }) => (
-            <li key={recipe.id}>
-              <NavLink
-                to={`/recipes/${recipe.id}`}
-                className={({ isActive }) =>
-                  [
-                    "block px-4 py-1",
-                    isActive
-                      ? "bg-[var(--color-antiquewhite)] rounded-t-xl"
-                      : "bg-white rounded-t-xl",
-                  ].join(" ")
-                }
-              >
-                {recipe.title}
-              </NavLink>
-            </li>
-          ))}
+          {data.recipes.map(
+            (recipe: { id: number; title: string; published: boolean }) => (
+              <li key={recipe.id}>
+                <NavLink
+                  to={`/recipes/${recipe.id}`}
+                  className={({ isActive }) =>
+                    [
+                      "block px-4 py-1",
+                      isActive
+                        ? "bg-[var(--color-antiquewhite)] rounded-t-xl"
+                        : "bg-white rounded-t-xl",
+                    ].join(" ")
+                  }
+                >
+                  {recipe.published ? recipe.title : null}
+                </NavLink>
+              </li>
+            ),
+          )}
         </ul>
       </aside>
       <main className="w-[560px] px-2">
