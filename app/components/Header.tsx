@@ -9,6 +9,9 @@ export default function Header() {
       <Link className="p-4" to="/recipes">
         Recipes
       </Link>
+      <Link className="p-4" to="/about">
+        About
+      </Link>
     </div>
   );
 }
