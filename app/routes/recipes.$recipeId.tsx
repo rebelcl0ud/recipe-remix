@@ -33,6 +33,9 @@ export async function loader({ params }: LoaderFunctionArgs) {
 
 export default function RecipeId() {
   const data = useLoaderData<typeof loader>();
+  if (!data.recipe) {
+    return <h1>Womp Womp! Something went wrong.</h1>;
+  }
   return (
     <div className="bg-[var(--color-antiquewhite)] p-4 rounded-xl h-[400px]">
       <h1 className="font-bold">{data.recipe?.title}</h1>
