@@ -17,8 +17,8 @@ vi.mock("@remix-run/react", async () => {
   };
 });
 
-describe("recipes", () => {
-  test("renders published recipes", async () => {
+describe("recipes page", () => {
+  test("renders published recipe titles", async () => {
     render(
       <MemoryRouter>
         <RecipesLayout />
@@ -27,5 +27,17 @@ describe("recipes", () => {
 
     expect(screen.getByText("Mock Recipe")).toBeInTheDocument();
     expect(screen.queryByText("Unpublished Recipe")).not.toBeInTheDocument();
+  });
+
+  test("published recipe title is a link", async () => {
+    render(
+      <MemoryRouter>
+        <RecipesLayout />
+      </MemoryRouter>,
+    );
+
+    const link = screen.getByText("Mock Recipe");
+    expect(link).toBeInTheDocument();
+    expect(link).toHaveAttribute("href", "/recipes/1");
   });
 });
