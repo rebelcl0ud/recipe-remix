@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient();
 
@@ -18,11 +19,15 @@ async function main() {
     prisma.ingredient.create({ data: { name: "Milk" } }),
   ]);
 
+  const password = "supersecretpw";
+  const hashedPW = await bcrypt.hash(password, 12);
+
   // Create users with recipes
   await prisma.user.create({
     data: {
       email: "luchi@example.com",
-      name: "Luchi",
+      password: hashedPW,
+      username: "Luchi",
       recipes: {
         create: [
           {
@@ -45,7 +50,8 @@ async function main() {
   await prisma.user.create({
     data: {
       email: "katella@example.com",
-      name: "Kat",
+      password: hashedPW,
+      username: "Kat",
       recipes: {
         create: [
           {
@@ -68,7 +74,8 @@ async function main() {
   await prisma.user.create({
     data: {
       email: "detra@example.com",
-      name: "D",
+      password: hashedPW,
+      username: "D",
       recipes: {
         create: [
           {
