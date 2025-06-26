@@ -1,8 +1,8 @@
 import { redirect, type LoaderFunctionArgs } from "@remix-run/node";
 import { getSession } from "../lib/sessions.server";
 import { useLoaderData } from "@remix-run/react";
-import { prisma } from "../lib/prisma.server";
 import { formatUsername } from "../utils/helpers";
+import { findUserById } from "../lib/auth.server";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const session = await getSession(request.headers.get("Cookie"));
@@ -12,14 +12,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     redirect("/login");
   }
 
-  const user = await prisma.user.findUnique({
-    where: {
-      id: Number(userId),
-    },
-    select: {
-      username: true,
-    },
-  });
+  const user = await findUserById(userId);
 
   console.log({ user });
   return { username: user?.username };

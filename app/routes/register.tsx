@@ -1,8 +1,7 @@
 import type { ActionFunctionArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { Form, Link, useActionData } from "@remix-run/react";
-import bcrypt from "bcrypt";
-import { prisma } from "../lib/prisma.server";
+import { createUser } from "../lib/auth.server";
 
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
@@ -43,18 +42,8 @@ export async function action({ request }: ActionFunctionArgs) {
     return new Response("Missing fields.", { status: 400 });
   }
 
-  // pw
-  const hashedPassword = await bcrypt.hash(password, 12);
-  console.log("HASH", hashedPassword);
-
-  // create user
-  const user = await prisma.user.create({
-    data: {
-      username: username ? username : null,
-      email: email,
-      password: hashedPassword,
-    },
-  });
+  // pw + create user
+  const user = await createUser(email, password, username);
 
   console.log("USER CREATED", user);
 
