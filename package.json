@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "generate-env": "npx tsx scripts/generate-env.ts",
     "test": "vitest --config vite.config.test.ts",
     "build": "remix vite:build && tsc -p tsconfig.build.json",
     "dev": "NODE_OPTIONS='--loader ts-node/esm' ts-node server.ts",
