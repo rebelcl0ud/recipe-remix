@@ -1,62 +1,73 @@
 import type { ActionFunctionArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { Form, Link, useActionData } from "@remix-run/react";
-import { createUser } from "../lib/auth.server";
+import { checkIfUserExists, createUser } from "../lib/auth.server";
+import { flattenErrorZod, registrationSchema } from "../utils/validationsZod";
+
+type RegisterActionData = {
+  errors?: {
+    email?: string[];
+    password?: string[];
+    confirmPassword?: string[];
+    username?: string[];
+  };
+  formErrors?: string[];
+  values?: Record<string, unknown>;
+};
 
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
-  const username = String(formData.get("username"));
-  const email = String(formData.get("email"));
-  const password = String(formData.get("password"));
 
-  console.log("FORM DATA", email, password);
+  const rawData = Object.fromEntries(formData.entries());
+  const result = registrationSchema.safeParse(rawData);
 
-  type Errors = {
-    username: string;
-    email: string;
-    password: string;
-  };
+  console.log("FORM DATA", rawData);
+  console.log("RESULT", result);
 
-  // basic form validations
-  const errors = {} as Errors;
-
-  if (username.length < 2) {
-    errors.password = "Username < 2 characters";
+  if (!result.success) {
+    console.log("-----ERRORS-----");
+    const { fieldErrors } = flattenErrorZod(result.error);
+    console.log("FIELD ERRORS:", fieldErrors);
+    // console.log("FORM ERRORS:", formErrors);
+    return {
+      errors: fieldErrors,
+      formErrors: ["Welp! Please try again."],
+      values: rawData,
+    } satisfies RegisterActionData;
   }
 
-  if (!email.includes("@")) {
-    errors.email = "Invaild email";
+  // pw + create user after checking for existing user
+  const { email, password, username } = result.data;
+
+  const existingUser = await checkIfUserExists(email);
+
+  if (existingUser) {
+    return {
+      ...existingUser,
+      values: rawData,
+    };
   }
 
-  if (password.length < 12) {
-    errors.password = "Password < 12 characters";
-  }
-
-  if (Object.keys(errors).length > 0) {
-    console.log("hitting errors block", { errors });
-    return { errors };
-  }
-
-  if (!email || !password) {
-    console.log("hitting the no email/no pw");
-    return new Response("Missing fields.", { status: 400 });
-  }
-
-  // pw + create user
   const user = await createUser(email, password, username);
-
   console.log("USER CREATED", user);
 
   return redirect("/login");
 }
 
 export default function Register() {
-  const actionData = useActionData<typeof action>();
+  const actionData = useActionData<RegisterActionData>();
 
   return (
     <div className="grow w-sm">
       <h1 className="my-8 justify-self-center">Register here!</h1>
-      <Form method="POST">
+      <Form method="POST" noValidate>
+        {actionData?.formErrors?.length ? (
+          <div className="mb-4 p-2 bg-red-100 text-red-500 rounded">
+            {actionData.formErrors.map((error, i) => (
+              <p key={i}>{error}</p>
+            ))}
+          </div>
+        ) : null}
         <p className="my-4">
           <label className="flex flex-col ">
             Username: (optional)
@@ -64,6 +75,7 @@ export default function Register() {
               className="bg-[var(--color-antiquewhite)] rounded-sm p-2"
               type="username"
               name="username"
+              defaultValue={actionData?.values?.username as string}
             />
           </label>
         </p>
@@ -74,11 +86,12 @@ export default function Register() {
               className="bg-[var(--color-antiquewhite)] rounded-sm p-2"
               type="email"
               name="email"
+              defaultValue={actionData?.values?.email as string}
               required
             />
           </label>
           {actionData?.errors?.email ? (
-            <em className="text-red-500">{actionData?.errors.email}</em>
+            <em className="text-red-500">{actionData?.errors.email[0]}</em>
           ) : null}
         </p>
         <p className="my-4">
@@ -92,7 +105,23 @@ export default function Register() {
             />
           </label>
           {actionData?.errors?.password ? (
-            <em className="text-red-500">{actionData?.errors.password}</em>
+            <em className="text-red-500">{actionData?.errors.password[0]}</em>
+          ) : null}
+        </p>
+        <p>
+          <label className="flex flex-col ">
+            Confirm Password:
+            <input
+              className="bg-[var(--color-antiquewhite)] rounded-sm p-2"
+              type="password"
+              name="confirmPassword"
+              required
+            />
+          </label>
+          {actionData?.errors?.confirmPassword ? (
+            <em className="text-red-500">
+              {actionData?.errors.confirmPassword[0]}
+            </em>
           ) : null}
         </p>
         <button
