@@ -19,7 +19,7 @@ export default function Header({ userId }: HeaderProps) {
       <Link className="p-4" to="/dashboard">
         {userId ? "Dashboard" : ""}
       </Link>
-      <Link className="p-4" to="/register">
+      <Link className="p-4" to={userId ? "/logout" : "/register"}>
         {userId ? "Logout" : "Login | Register"}
       </Link>
     </div>

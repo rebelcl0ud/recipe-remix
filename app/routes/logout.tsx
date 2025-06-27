@@ -1,9 +1,21 @@
-import type { ActionFunctionArgs } from "@remix-run/node";
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import { Form, Link, redirect } from "@remix-run/react";
 import { destroySession, getSession } from "../lib/sessions.server";
 
+export async function loader({ request }: LoaderFunctionArgs) {
+  const session = await getSession(request.headers.get("Cookie"));
+  const userId = session.get("userId");
+
+  if (!userId) {
+    return redirect("/login");
+  }
+
+  return null;
+}
+
 export async function action({ request }: ActionFunctionArgs) {
   const session = await getSession(request.headers.get("Cookie"));
+
   return redirect("/login", {
     headers: {
       "Set-Cookie": await destroySession(session),

@@ -9,7 +9,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const userId = session.get("userId");
 
   if (!userId) {
-    redirect("/login");
+    return redirect("/login");
   }
 
   const user = await findUserById(userId);
