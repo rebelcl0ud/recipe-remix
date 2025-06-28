@@ -17,3 +17,8 @@ export type RegisterFormInput = z.infer<typeof registrationSchema>;
 export function flattenErrorZod(error: z.ZodError) {
   return z.flattenError(error);
 }
+
+export const loginSchema = z.object({
+  email: z.email().toLowerCase(),
+  password: z.string().nonempty(),
+});

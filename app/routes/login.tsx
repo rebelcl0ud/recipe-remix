@@ -1,8 +1,18 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
-import { Form, useLoaderData } from "@remix-run/react";
+import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { commitSession, getSession } from "../lib/sessions.server";
 import { validateCredentials } from "../lib/auth.server";
+import { flattenErrorZod, loginSchema } from "../utils/validationsZod";
+
+type LoginActionData = {
+  errors?: {
+    email?: string[];
+    password?: string[];
+  };
+  formErrors?: string[];
+  values?: Record<string, unknown>;
+};
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const session = await getSession(request.headers.get("cookie"));
@@ -25,11 +35,25 @@ export async function action({ request }: ActionFunctionArgs) {
   console.log("SESSION", { session });
 
   const formData = await request.formData();
-  const email = String(formData.get("email"));
-  const password = String(formData.get("password"));
 
-  console.log("FORM DATA", email, password);
+  const rawData = Object.fromEntries(formData.entries());
+  const result = loginSchema.safeParse(rawData);
 
+  console.log("FORM DATA", rawData);
+  console.log("RESULT", result);
+
+  if (!result.success) {
+    console.log("----ERRORS-----");
+    const { fieldErrors } = flattenErrorZod(result.error);
+    console.log("FIELD ERRORS", fieldErrors);
+    return {
+      errors: fieldErrors,
+      formErrors: ["Welp! Please try again."],
+      values: rawData,
+    } satisfies LoginActionData;
+  }
+
+  const { email, password } = result.data;
   const userId = await validateCredentials(email, password);
   console.log("USERID", { userId });
 
@@ -58,13 +82,21 @@ export async function action({ request }: ActionFunctionArgs) {
 
 export default function Login() {
   const { error } = useLoaderData<typeof loader>();
+  const actionData = useActionData<LoginActionData>();
 
   return (
     <>
       {error ? <div className="text-red-500">{error}</div> : null}
       <div className="grow w-sm">
         <h1 className="my-8 justify-self-center">Welcome back!</h1>
-        <Form method="POST">
+        <Form method="POST" noValidate>
+          {actionData?.formErrors?.length ? (
+            <div className="mb-4 p-2 bg-red-100 text-red-500 rounded">
+              {actionData.formErrors.map((error, i) => (
+                <p key={i}>{error}</p>
+              ))}
+            </div>
+          ) : null}
           <p className="my-4">
             <label className="flex flex-col">
               Email:
@@ -75,6 +107,9 @@ export default function Login() {
                 required
               />
             </label>
+            {actionData?.errors?.email ? (
+              <em className="text-red-500">{actionData?.errors.email[0]}</em>
+            ) : null}
           </p>
           <p className="my-4">
             <label className="flex flex-col">
@@ -86,6 +121,9 @@ export default function Login() {
                 required
               />
             </label>
+            {actionData?.errors?.password ? (
+              <em className="text-red-500">{actionData?.errors.password[0]}</em>
+            ) : null}
           </p>
           <button
             className="my-4 px-4 py-2 rounded-sm bg-[var(--color-antiquewhite)]"
