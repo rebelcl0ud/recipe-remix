@@ -27,7 +27,7 @@ export async function createUser(
   const hashedPassword = await bcrypt.hash(password, 12);
   return prisma.user.create({
     data: {
-      username: username ? username : null,
+      ...(username ? { username } : {}), // when null set, default ('friend') will not be used
       email: email,
       password: hashedPassword,
     },

@@ -13,9 +13,10 @@ export async function loader({ request }: LoaderFunctionArgs) {
   }
 
   const user = await findUserById(userId);
+  const username = user?.username ?? "friend";
 
   console.log({ user });
-  return { username: user?.username };
+  return { username };
 }
 
 export default function Dashboard() {
@@ -23,7 +24,7 @@ export default function Dashboard() {
   const { username } = useLoaderData<typeof loader>();
   console.log({ username });
 
-  const usernameCapitalized = username ? formatUsername(username) : null;
+  const usernameCapitalized = formatUsername(username);
 
   return (
     <div className="grow w-sm">

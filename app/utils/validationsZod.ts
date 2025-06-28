@@ -2,7 +2,7 @@ import * as z from "zod/v4";
 
 export const registrationSchema = z
   .object({
-    username: z.string().toLowerCase().optional(),
+    username: z.string().toLowerCase().optional().default("friend"),
     email: z.email().toLowerCase(),
     password: z.string().min(12),
     confirmPassword: z.string(),
