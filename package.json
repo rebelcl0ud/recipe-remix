@@ -11,7 +11,19 @@
     "typecheck": "tsc --noEmit",
     "lint": "npx eslint .",
     "format:check": "npx prettier . --check",
-    "format:write": "npx prettier . --write"
+    "format:write": "npx prettier . --write",
+    "prepare": "husky",
+    "lint:staged": "lint-staged"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "vitest related --run",
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.json": [
+      "prettier --write"
+    ]
   },
   "prisma": {
     "seed": "npx tsx prisma/seed.ts"
@@ -49,7 +61,9 @@
     "@types/react-dom": "^19.1.6",
     "eslint": "^9.27.0",
     "eslint-config-prettier": "^10.1.5",
+    "husky": "^9.1.7",
     "jsdom": "^26.1.0",
+    "lint-staged": "^16.1.2",
     "prettier": "3.5.3",
     "prisma": "^6.7.0",
     "ts-node": "^10.9.2",

@@ -1,0 +1,5 @@
+echo "🔍 Checking for lint, formatting and test issues..."
+npm run lint:staged
+
+echo "🔎 Typechecking..."
+npm run typecheck

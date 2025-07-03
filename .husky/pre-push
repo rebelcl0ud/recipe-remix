@@ -1,0 +1,8 @@
+echo "🔍 Running tests..."
+npm test
+
+echo "🔎 Typechecking..."
+npm run typecheck
+
+echo "🛠️ Running build check..."
+npm run build
