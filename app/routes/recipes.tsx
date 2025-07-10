@@ -28,7 +28,7 @@ export default function RecipesLayout() {
                     [
                       "block px-4 py-1",
                       isActive
-                        ? "bg-[var(--color-antiquewhite)] rounded-t-xl"
+                        ? "bg-antiquewhite rounded-t-xl"
                         : "bg-white rounded-t-xl",
                     ].join(" ")
                   }

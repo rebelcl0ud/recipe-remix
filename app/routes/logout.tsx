@@ -26,11 +26,11 @@ export async function action({ request }: ActionFunctionArgs) {
 export default function logout() {
   console.log("logout page");
   return (
-    <div className="grow w-sm">
+    <div className="grow w-sm content-evenly">
       <h1 className="my-8 justify-self-center">You sure you want to logout?</h1>
       <Form method="POST">
         <button
-          className="w-full my-4 px-4 py-2 rounded-sm bg-[var(--color-antiquewhite)]"
+          className="w-full my-4 px-4 py-2 rounded-sm bg-antiquewhite"
           type="submit"
         >
           Ciao!

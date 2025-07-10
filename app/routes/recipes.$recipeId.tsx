@@ -37,7 +37,7 @@ export default function RecipeId() {
     return <h1>Womp Womp! Something went wrong.</h1>;
   }
   return (
-    <div className="bg-[var(--color-antiquewhite)] p-4 rounded-xl h-[400px]">
+    <div className="bg-antiquewhite p-4 rounded-xl h-[400px]">
       <h1 className="font-bold">{data.recipe?.title}</h1>
       <p className="italic">{data.recipe?.content}</p>
       <ul className="m-4">

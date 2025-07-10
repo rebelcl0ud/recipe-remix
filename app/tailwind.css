@@ -1,5 +1,6 @@
 @import "tailwindcss";
 
+/** https://tailwindcss.com/docs/theme#theme-variable-namespaces **/
 @theme {
   --color-pink: #e4babe;
   --color-seashell: #fcf1ef;

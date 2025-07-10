@@ -1,6 +1,6 @@
 export default function About() {
   return (
-    <div className="grow">
+    <div className="grow content-evenly">
       <h1>Why make this?</h1>
       <br />
       <p>

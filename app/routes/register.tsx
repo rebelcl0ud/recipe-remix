@@ -58,8 +58,8 @@ export default function Register() {
   const actionData = useActionData<RegisterActionData>();
 
   return (
-    <div className="grow w-sm">
-      <h1 className="my-8 justify-self-center">Register here!</h1>
+    <div className="grow w-sm content-evenly">
+      <h1 className="mb-8 justify-self-center">Register here!</h1>
       <Form method="POST" noValidate>
         {actionData?.formErrors?.length ? (
           <div className="mb-4 p-2 bg-red-100 text-red-500 rounded">
@@ -72,7 +72,7 @@ export default function Register() {
           <label className="flex flex-col ">
             Username: (optional)
             <input
-              className="bg-[var(--color-antiquewhite)] rounded-sm p-2"
+              className="bg-antiquewhite rounded-sm p-2"
               type="username"
               name="username"
               defaultValue={actionData?.values?.username as string}
@@ -83,7 +83,7 @@ export default function Register() {
           <label className="flex flex-col ">
             Email:
             <input
-              className="bg-[var(--color-antiquewhite)] rounded-sm p-2"
+              className="bg-antiquewhite rounded-sm p-2"
               type="email"
               name="email"
               defaultValue={actionData?.values?.email as string}
@@ -98,7 +98,7 @@ export default function Register() {
           <label className="flex flex-col ">
             Password:
             <input
-              className="bg-[var(--color-antiquewhite)] rounded-sm p-2"
+              className="bg-antiquewhite rounded-sm p-2"
               type="password"
               name="password"
               required
@@ -112,7 +112,7 @@ export default function Register() {
           <label className="flex flex-col ">
             Confirm Password:
             <input
-              className="bg-[var(--color-antiquewhite)] rounded-sm p-2"
+              className="bg-antiquewhite rounded-sm p-2"
               type="password"
               name="confirmPassword"
               required
@@ -125,7 +125,7 @@ export default function Register() {
           ) : null}
         </p>
         <button
-          className="my-4 px-4 py-2 rounded-sm bg-[var(--color-antiquewhite)]"
+          className="my-4 px-4 py-2 rounded-sm bg-antiquewhite"
           type="submit"
         >
           Register

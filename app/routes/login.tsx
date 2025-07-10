@@ -87,8 +87,8 @@ export default function Login() {
   return (
     <>
       {error ? <div className="text-red-500">{error}</div> : null}
-      <div className="grow w-sm">
-        <h1 className="my-8 justify-self-center">Welcome back!</h1>
+      <div className="grow w-sm content-evenly">
+        <h1 className="mb-8 justify-self-center">Welcome back!</h1>
         <Form method="POST" noValidate>
           {actionData?.formErrors?.length ? (
             <div className="mb-4 p-2 bg-red-100 text-red-500 rounded">
@@ -101,7 +101,7 @@ export default function Login() {
             <label className="flex flex-col">
               Email:
               <input
-                className="bg-[var(--color-antiquewhite)] rounded-sm p-2"
+                className="bg-antiquewhite rounded-sm p-2"
                 type="email"
                 name="email"
                 required
@@ -115,7 +115,7 @@ export default function Login() {
             <label className="flex flex-col">
               Password:
               <input
-                className="bg-[var(--color-antiquewhite)] rounded-sm p-2"
+                className="bg-antiquewhite rounded-sm p-2"
                 type="password"
                 name="password"
                 required
@@ -126,7 +126,7 @@ export default function Login() {
             ) : null}
           </p>
           <button
-            className="my-4 px-4 py-2 rounded-sm bg-[var(--color-antiquewhite)]"
+            className="my-4 px-4 py-2 rounded-sm bg-antiquewhite"
             type="submit"
           >
             Login

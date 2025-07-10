@@ -1,11 +1,9 @@
-import { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
+import { LoaderFunctionArgs } from "@remix-run/node";
 import { Links, Meta, Outlet, Scripts, useLoaderData } from "@remix-run/react";
-import styles from "./tailwind.css";
+import "./tailwind.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { getSession } from "./lib/sessions.server";
-
-export const links: LinksFunction = () => [{ rel: "stylesheet", href: styles }];
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const session = await getSession(request.headers.get("Cookie"));
