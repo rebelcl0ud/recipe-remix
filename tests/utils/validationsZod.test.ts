@@ -16,8 +16,6 @@ describe("register schema", () => {
       password: "password123!",
       confirmPassword: "password123!",
     });
-    console.log({ result });
-
     assert(!result.success);
     expect(result.error.issues[0].message).toBe("Invalid email address");
   });
