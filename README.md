@@ -77,3 +77,9 @@ Located in `scripts/generate-env.ts`:
 - Also outputs `.env.example` if missing
 
 ---
+
+## 🪜 next steps
+
+- 🧪 More tests
+- 🏗️ Build out dashboard
+- 🗃️ Recipe Forms
