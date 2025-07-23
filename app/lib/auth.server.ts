@@ -46,19 +46,14 @@ export async function findUserById(userId: string | undefined) {
 }
 
 export async function validateCredentials(email: string, password: string) {
-  console.log("hits the validation fn");
   const user = await prisma.user.findUnique({
     where: {
       email,
     },
   });
 
-  console.log({ user });
-
   if (!user) return null;
 
   const isValid = await bcrypt.compare(password, user.password);
-
-  console.log("isValid", isValid);
   return isValid ? user.id : null;
 }
