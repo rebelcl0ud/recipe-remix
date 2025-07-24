@@ -21,14 +21,9 @@ export async function action({ request }: ActionFunctionArgs) {
   const rawData = Object.fromEntries(formData.entries());
   const result = registrationSchema.safeParse(rawData);
 
-  console.log("FORM DATA", rawData);
-  console.log("RESULT", result);
-
   if (!result.success) {
-    console.log("-----ERRORS-----");
     const { fieldErrors } = flattenErrorZod(result.error);
     console.log("FIELD ERRORS:", fieldErrors);
-    // console.log("FORM ERRORS:", formErrors);
     return {
       errors: fieldErrors,
       formErrors: ["Welp! Please try again."],
@@ -38,7 +33,6 @@ export async function action({ request }: ActionFunctionArgs) {
 
   // pw + create user after checking for existing user
   const { email, password, username } = result.data;
-
   const existingUser = await checkIfUserExists(email);
 
   if (existingUser) {
@@ -48,9 +42,7 @@ export async function action({ request }: ActionFunctionArgs) {
     };
   }
 
-  const user = await createUser(email, password, username);
-  console.log("USER CREATED", user);
-
+  await createUser(email, password, username);
   return redirect("/login");
 }
 
