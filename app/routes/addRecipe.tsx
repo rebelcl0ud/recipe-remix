@@ -1,4 +1,8 @@
-import { redirect, type ActionFunctionArgs } from "@remix-run/node";
+import {
+  LoaderFunctionArgs,
+  redirect,
+  type ActionFunctionArgs,
+} from "@remix-run/node";
 import { Form, useActionData } from "@remix-run/react";
 import { flattenErrorZod, recipeSchema } from "../utils/validationsZod";
 import IngredientsForm from "../components/IngredientsForm";
@@ -16,8 +20,19 @@ type RecipeActionData = {
   values?: Record<string, unknown>;
 };
 
+export async function loader({ request }: LoaderFunctionArgs) {
+  const session = await getSession(request.headers.get("Cookie"));
+  const userId = session.get("userId");
+
+  if (!userId) {
+    return redirect("/login");
+  }
+
+  return null;
+}
+
 export async function action({ request }: ActionFunctionArgs) {
-  const session = await getSession(request.headers.get("cookie"));
+  const session = await getSession(request.headers.get("Cookie"));
   const authorId = Number(session.get("userId"));
 
   const formData = await request.formData();
