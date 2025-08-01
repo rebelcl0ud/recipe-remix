@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 type Ingredient = { name: string; amount: string };
 
-export default function IngredientsForm() {
+export default function IngredientsForm({ error }: { error?: string }) {
   const [ingredient, setIngredient] = useState("");
   const [amount, setAmount] = useState("");
   const [ingredientList, setIngredientList] = useState<Ingredient[]>([]);
@@ -56,6 +56,7 @@ export default function IngredientsForm() {
           +
         </button>
       </span>
+      {error && <em className="text-red-500">{error}</em>}
       <ul className="grid grid-cols-3 justify-items-center">
         {ingredientList.map((ingredient, idx) => (
           <li key={idx} className="my-2">

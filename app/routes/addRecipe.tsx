@@ -13,7 +13,7 @@ type RecipeActionData = {
   errors?: {
     title?: string[];
     content?: string[];
-    ingredients?: { name: string; amount: string }[];
+    ingredients?: string[];
     publish?: string[];
   };
   formErrors?: string[];
@@ -104,9 +104,12 @@ export default function addRecipe() {
               required
             />
           </label>
+          {actionData?.errors?.content ? (
+            <em className="text-red-500">{actionData?.errors.content[0]}</em>
+          ) : null}
         </p>
         {/* ingredient form goes here */}
-        <IngredientsForm />
+        <IngredientsForm error={actionData?.errors?.ingredients?.[0]} />
         <p className="mt-8 mb-4">
           <label className="inline-flex">
             Publish?

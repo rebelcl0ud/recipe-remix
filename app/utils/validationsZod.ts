@@ -24,15 +24,15 @@ export const loginSchema = z.object({
 });
 
 export const recipeSchema = z.object({
-  title: z.string().toLowerCase(),
-  content: z.string().toLowerCase().max(305),
+  title: z.string().min(1, { message: "Title is required" }),
+  content: z.string().max(305),
   ingredients: z
     .array(
       z.object({
-        name: z.string().toLowerCase().min(1),
-        amount: z.string().toLowerCase().min(1),
+        name: z.string().toLowerCase(),
+        amount: z.string().toLowerCase(),
       }),
     )
-    .min(1, "you must add >= 1 ingredient"),
+    .min(1, "You must add >= 1 ingredient/amount"),
   published: z.boolean(),
 });
