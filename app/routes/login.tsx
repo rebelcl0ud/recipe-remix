@@ -33,20 +33,14 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 export async function action({ request }: ActionFunctionArgs) {
   const session = await getSession(request.headers.get("Cookie"));
-  console.log("SESSION", { session });
 
   const formData = await request.formData();
 
   const rawData = Object.fromEntries(formData.entries());
   const result = loginSchema.safeParse(rawData);
 
-  console.log("FORM DATA", rawData);
-  console.log("RESULT", result);
-
   if (!result.success) {
-    console.log("----ERRORS-----");
     const { fieldErrors } = flattenErrorZod(result.error);
-    console.log("FIELD ERRORS", fieldErrors);
     return {
       errors: fieldErrors,
       formErrors: ["Welp! Please try again."],
@@ -56,10 +50,8 @@ export async function action({ request }: ActionFunctionArgs) {
 
   const { email, password } = result.data;
   const userId = await validateCredentials(email, password);
-  console.log("USERID", { userId });
 
   if (userId == null) {
-    console.log("***hit an error***");
     session.flash("error", "invalid email/password");
 
     // redirect to login page w/ errors
