@@ -2,10 +2,11 @@ import { describe, test, expect, vi } from "vitest";
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
 import LoginForm from "../../app/components/LoginForm";
-import { loader } from "../../app/routes/login";
+import { loader, action } from "../../app/routes/login";
 import { createMemoryRouter, RouterProvider } from "react-router-dom";
 import { LoaderFunctionArgs, Session } from "@remix-run/node";
 import { commitSession, getSession } from "../../app/lib/sessions.server";
+import { validateCredentials } from "../../app/lib/auth.server";
 
 vi.mock("@remix-run/react", async () => {
   const actual = await import("@remix-run/react");
@@ -18,6 +19,10 @@ vi.mock("@remix-run/react", async () => {
 vi.mock("../../app/lib/sessions.server", () => ({
   getSession: vi.fn(),
   commitSession: vi.fn(),
+}));
+
+vi.mock("../../app/lib/auth.server", () => ({
+  validateCredentials: vi.fn(),
 }));
 
 describe("component: login", () => {
@@ -123,3 +128,48 @@ describe("loader: login", () => {
     expect(response.headers.get("Set-Cookie")).toBe("committed-cookie");
   });
 });
+
+describe("action: login", () => {
+  test("redirect on successful login", async () => {
+    const mockedSet = vi.fn();
+    vi.mocked(getSession).mockResolvedValue({
+      has: () => true,
+      get: () => null,
+      set: mockedSet,
+      flash: vi.fn(),
+    } as Partial<Session> as Session);
+
+    vi.mocked(commitSession).mockResolvedValue("committed-cookie");
+    vi.mocked(validateCredentials).mockResolvedValue(Number("123"));
+
+    const formData = new URLSearchParams({
+      email: "android18@dbz.com",
+      password: "secretpassword18",
+    });
+
+    const args: LoaderFunctionArgs = {
+      request: new Request("http://localhost/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: formData,
+      }),
+      params: {},
+      context: {},
+    };
+
+    const result = await action(args);
+    expect(result).toBeInstanceOf(Response);
+    expect(result).toHaveProperty("status", 302);
+    expect((result as Response).headers.get("Location")).toBe("/dashboard");
+    expect(mockedSet).toHaveBeenCalledWith("userId", "123");
+  });
+});
+
+// getSession
+// formData => result
+// if result is not a successful
+
+// result data => email, pw
+// userId, if null => redirect /login
+// else => set userId => redirect to /dashboard
+// cookie set either way
