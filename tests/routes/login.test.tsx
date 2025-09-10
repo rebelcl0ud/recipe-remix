@@ -8,6 +8,19 @@ import { LoaderFunctionArgs, Session } from "@remix-run/node";
 import { commitSession, getSession } from "../../app/lib/sessions.server";
 import { validateCredentials } from "../../app/lib/auth.server";
 
+function createMockSession(overrides: Partial<Session> = {}): Session {
+  return {
+    data: {},
+    id: "mock-session-id",
+    flash: vi.fn(),
+    get: vi.fn(() => undefined) as Session["get"],
+    has: vi.fn(),
+    set: vi.fn(),
+    unset: vi.fn(),
+    ...overrides,
+  };
+}
+
 vi.mock("@remix-run/react", async () => {
   const actual = await import("@remix-run/react");
   return {
@@ -84,17 +97,14 @@ describe("component: login", () => {
 
 describe("loader: login", () => {
   test("redirects user if logged in", async () => {
-    vi.mocked(getSession).mockResolvedValue({
+    const mockSession = createMockSession({
       has: () => true,
-      get: () => null,
-    } as Partial<Session> as Session);
+    });
 
-    vi.mocked(commitSession).mockResolvedValue("committed-cookie");
+    vi.mocked(getSession).mockResolvedValue(mockSession);
 
     const args: LoaderFunctionArgs = {
-      request: new Request("http://localhost/login", {
-        headers: { Cookie: "cookie" },
-      }),
+      request: new Request("http://localhost/login"),
       params: {},
       context: {},
     };
@@ -106,17 +116,16 @@ describe("loader: login", () => {
   });
 
   test("return sessionError when not logged in", async () => {
-    vi.mocked(getSession).mockResolvedValue({
+    const mockSession = createMockSession({
       has: () => false,
-      get: () => "error",
-    } as Partial<Session> as Session);
+      get: vi.fn(() => "error") as Session["get"],
+    });
 
+    vi.mocked(getSession).mockResolvedValue(mockSession);
     vi.mocked(commitSession).mockResolvedValue("committed-cookie");
 
     const args: LoaderFunctionArgs = {
-      request: new Request("http://localhost/login", {
-        headers: { Cookie: "cookie" },
-      }),
+      request: new Request("http://localhost/login"),
       params: {},
       context: {},
     };
@@ -131,16 +140,11 @@ describe("loader: login", () => {
 
 describe("action: login", () => {
   test("redirect on successful login", async () => {
-    const mockedSet = vi.fn();
-    vi.mocked(getSession).mockResolvedValue({
-      has: () => true,
-      get: () => null,
-      set: mockedSet,
-      flash: vi.fn(),
-    } as Partial<Session> as Session);
+    const mockSession = createMockSession();
 
+    vi.mocked(getSession).mockResolvedValue(mockSession);
     vi.mocked(commitSession).mockResolvedValue("committed-cookie");
-    vi.mocked(validateCredentials).mockResolvedValue(Number("123"));
+    vi.mocked(validateCredentials).mockResolvedValue(Number("123")); // userID
 
     const formData = new URLSearchParams({
       email: "android18@dbz.com",
@@ -158,18 +162,76 @@ describe("action: login", () => {
     };
 
     const result = await action(args);
-    expect(result).toBeInstanceOf(Response);
+
     expect(result).toHaveProperty("status", 302);
     expect((result as Response).headers.get("Location")).toBe("/dashboard");
-    expect(mockedSet).toHaveBeenCalledWith("userId", "123");
+    expect(mockSession.set).toHaveBeenCalledWith("userId", "123");
+  });
+
+  test("redirects to /login on invalid credentials", async () => {
+    const mockSession = createMockSession();
+
+    vi.mocked(getSession).mockResolvedValue(mockSession);
+    vi.mocked(commitSession).mockResolvedValue("committed-cookie");
+    vi.mocked(validateCredentials).mockResolvedValue(null);
+
+    const formData = new URLSearchParams({
+      email: "android18@dbz.com",
+      password: "wrongpw",
+    });
+
+    const args: LoaderFunctionArgs = {
+      request: new Request("http://localhost/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: formData,
+      }),
+      params: {},
+      context: {},
+    };
+
+    const result = await action(args);
+
+    expect(result).toHaveProperty("status", 302);
+    expect((result as Response).headers.get("Location")).toBe("/login");
+    expect(mockSession.flash).toHaveBeenCalledWith(
+      "error",
+      "invalid email/password",
+    );
+  });
+
+  test("returns validation errors on invalid data", async () => {
+    const mockSession = createMockSession();
+
+    vi.mocked(getSession).mockResolvedValue(mockSession);
+
+    const formData = new URLSearchParams({
+      email: "this-is-so-not-an-email",
+      password: "",
+    });
+
+    const args: LoaderFunctionArgs = {
+      request: new Request("http://localhost/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: formData,
+      }),
+      params: {},
+      context: {},
+    };
+
+    const result = await action(args);
+
+    expect(result).toMatchObject({
+      errors: {
+        email: ["Invalid email address"],
+        password: ["Too small: expected string to have >=1 characters"],
+      },
+      formErrors: ["Welp! Please try again."],
+      values: {
+        email: "this-is-so-not-an-email",
+        password: "",
+      },
+    });
   });
 });
-
-// getSession
-// formData => result
-// if result is not a successful
-
-// result data => email, pw
-// userId, if null => redirect /login
-// else => set userId => redirect to /dashboard
-// cookie set either way
