@@ -1,8 +1,16 @@
-import { NavLink, Outlet, useLoaderData } from "@remix-run/react";
+import { Link, NavLink, Outlet, useLoaderData } from "@remix-run/react";
 import { prisma } from "../lib/prisma.server";
+import { getSession } from "../lib/sessions.server";
+import { LoaderFunctionArgs } from "@remix-run/node";
 
-export async function loader() {
+export async function loader({ request }: LoaderFunctionArgs) {
+  const session = await getSession(request.headers.get("Cookie"));
+  const userId = session.get("userId");
+
   const recipes = await prisma.recipe.findMany({
+    where: {
+      published: true,
+    },
     select: {
       id: true,
       title: true,
@@ -10,7 +18,7 @@ export async function loader() {
     },
   });
 
-  return { recipes };
+  return { recipes, userId };
 }
 
 export default function RecipesLayout() {
@@ -33,12 +41,22 @@ export default function RecipesLayout() {
                     ].join(" ")
                   }
                 >
-                  {recipe.published ? recipe.title : null}
+                  {recipe.title}
                 </NavLink>
               </li>
             ),
           )}
         </ul>
+        {!data.userId ? null : (
+          <div className="my-2 relative inline-block">
+            <Link
+              className="px-4 after:absolute after:left-1/2 after:-translate-x-1/2 after:-bottom-[1px] after:w-3/4 after:h-1.5 after:bg-blue-500"
+              to="/addRecipe"
+            >
+              Wanna Add Recipe?
+            </Link>
+          </div>
+        )}
       </aside>
       <main className="w-[560px] px-2">
         <Outlet />

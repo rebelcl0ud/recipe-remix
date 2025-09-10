@@ -9,10 +9,7 @@ vi.mock("@remix-run/react", async () => {
   return {
     ...actual,
     useLoaderData: () => ({
-      recipes: [
-        { id: 1, title: "Mock Recipe", published: true },
-        { id: 2, title: "Unpublished Recipe", published: false },
-      ],
+      recipes: [{ id: 1, title: "Mock Recipe", published: true }],
     }),
   };
 });
