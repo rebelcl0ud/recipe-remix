@@ -27,3 +27,12 @@ export async function createRecipe(
     },
   });
 }
+
+export async function deleteRecipe(recipeId: number) {
+  return prisma.recipe.update({
+    where: {
+      id: recipeId,
+    },
+    data: { deletedAt: new Date() },
+  });
+}
