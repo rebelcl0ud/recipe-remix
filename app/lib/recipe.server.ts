@@ -36,3 +36,34 @@ export async function deleteRecipe(recipeId: number) {
     data: { deletedAt: new Date() },
   });
 }
+
+export async function updateRecipe(
+  recipeId: number,
+  title: string,
+  content: string,
+  ingredients: { name: string; amount: string }[],
+  published: boolean,
+) {
+  return prisma.recipe.update({
+    where: {
+      id: recipeId,
+    },
+    data: {
+      title,
+      content,
+      ingredients: {
+        deleteMany: {},
+        create: ingredients.map(({ name, amount }) => ({
+          amount,
+          ingredient: {
+            connectOrCreate: {
+              where: { name },
+              create: { name },
+            },
+          },
+        })),
+      },
+      published,
+    },
+  });
+}

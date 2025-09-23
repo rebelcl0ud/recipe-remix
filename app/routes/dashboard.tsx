@@ -48,6 +48,10 @@ export async function action({ request }: ActionFunctionArgs) {
     return redirect("/dashboard");
   }
 
+  if (_action === "update" && id) {
+    return redirect(`/editRecipe/${id}`);
+  }
+
   return null;
 }
 
@@ -72,7 +76,12 @@ export default function Dashboard() {
           >
             <div className="self-center py-2">{recipe.title}</div>
             <div className="flex justify-evenly py-2 bg-seashell rounded-sm border">
-              <button>edit</button>
+              <Form method="POST">
+                <input type="hidden" name="id" value={recipe.id}></input>
+                <button type="submit" name="_action" value="update">
+                  edit
+                </button>
+              </Form>
               <div className="border-r"></div>
               <Form method="POST">
                 <input type="hidden" name="id" value={recipe.id}></input>
