@@ -41,8 +41,6 @@ export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
   const { _action, id } = Object.fromEntries(formData);
 
-  console.log("action/dashboard", _action, id);
-
   if (_action === "delete" && id) {
     await deleteRecipe(Number(id));
     return redirect("/dashboard");
@@ -56,10 +54,7 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function Dashboard() {
-  console.log("dashboard");
   const { username, recipes } = useLoaderData<typeof loader>();
-  console.log("dashboard", { username, recipes });
-
   const usernameCapitalized = formatUsername(username);
 
   return (
