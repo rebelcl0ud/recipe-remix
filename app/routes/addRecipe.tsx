@@ -8,17 +8,7 @@ import { flattenErrorZod, recipeSchema } from "../utils/validationsZod";
 import IngredientsForm from "../components/IngredientsForm";
 import { getSession } from "../lib/sessions.server";
 import { createRecipe } from "../lib/recipe.server";
-
-type RecipeActionData = {
-  errors?: {
-    title?: string[];
-    content?: string[];
-    ingredients?: string[];
-    publish?: string[];
-  };
-  formErrors?: string[];
-  values?: Record<string, unknown>;
-};
+import type { RecipeActionData } from "../types/recipe";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const session = await getSession(request.headers.get("Cookie"));
@@ -44,7 +34,6 @@ export async function action({ request }: ActionFunctionArgs) {
 
   if (!result.success) {
     const { fieldErrors } = flattenErrorZod(result.error);
-    console.log("FIELD ERRORS:", fieldErrors);
     return {
       errors: fieldErrors,
       formErrors: ["Welp! Please try again."],
@@ -67,7 +56,6 @@ export async function action({ request }: ActionFunctionArgs) {
 
 export default function addRecipe() {
   const actionData = useActionData<RecipeActionData>();
-  console.log("actionData", { actionData });
   return (
     <div className="grow w-sm content-evenly">
       <h1 className="mb-8 justify-self-center">Add your recipe here!</h1>
