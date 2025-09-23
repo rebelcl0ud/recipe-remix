@@ -51,6 +51,16 @@ npm run seed
 
 ---
 
+### 3a. 💻👀 Database
+
+Wanna see that DB in-browser?
+
+```bash
+npx prisma studio
+```
+
+---
+
 ### 4. 🧪 Run Tests
 
 ```bash
@@ -81,5 +91,3 @@ Located in `scripts/generate-env.ts`:
 ## 🪜 next steps
 
 - 🧪 More tests
-- 🏗️ Build out dashboard
-- 🗃️ Recipe Forms
