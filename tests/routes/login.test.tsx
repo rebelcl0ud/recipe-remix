@@ -7,19 +7,7 @@ import { createMemoryRouter, RouterProvider } from "react-router-dom";
 import { LoaderFunctionArgs, Session } from "@remix-run/node";
 import { commitSession, getSession } from "../../app/lib/sessions.server";
 import { validateCredentials } from "../../app/lib/auth.server";
-
-function createMockSession(overrides: Partial<Session> = {}): Session {
-  return {
-    data: {},
-    id: "mock-session-id",
-    flash: vi.fn(),
-    get: vi.fn(() => undefined) as Session["get"],
-    has: vi.fn(),
-    set: vi.fn(),
-    unset: vi.fn(),
-    ...overrides,
-  };
-}
+import { createMockSession } from "../helpers/mocks";
 
 vi.mock("@remix-run/react", async () => {
   const actual = await import("@remix-run/react");
