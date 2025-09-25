@@ -6,6 +6,7 @@ import {
   createUser,
   validateCredentials,
 } from "../../app/lib/auth.server";
+import { fakeDate } from "../helpers/mocks";
 
 vi.mock("../../app/lib/prisma.server", () => ({
   prisma: {
@@ -22,8 +23,6 @@ vi.mock("bcrypt", () => ({
     hash: vi.fn(),
   },
 }));
-
-const fakeDate = new Date("2025-01-01T00:00:00Z");
 
 describe("verify login", () => {
   test("return user ID on valid login", async () => {

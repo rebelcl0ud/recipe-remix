@@ -14,4 +14,6 @@ function createMockSession(overrides: Partial<Session> = {}): Session {
   };
 }
 
-export { createMockSession };
+const fakeDate = new Date("2025-01-01T00:00:00Z");
+
+export { createMockSession, fakeDate };
